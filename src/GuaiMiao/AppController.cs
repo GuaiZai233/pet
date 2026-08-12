@@ -23,6 +23,7 @@ internal sealed class AppController : IDisposable
     private readonly DispatcherTimer _pawTimer;
     private readonly DispatcherTimer _autoRunTimer;
     private readonly DispatcherTimer _movementTimer;
+    private readonly DispatcherTimer _hoverBoundsTimer;
     private AppSettings _settings;
     private bool _autoAction;
     private int _movementTicks;
@@ -55,6 +56,11 @@ internal sealed class AppController : IDisposable
             Interval = TimeSpan.FromMilliseconds(90)
         };
         _movementTimer.Tick += OnMovementTick;
+        _hoverBoundsTimer = new DispatcherTimer(DispatcherPriority.Input)
+        {
+            Interval = TimeSpan.FromMilliseconds(100)
+        };
+        _hoverBoundsTimer.Tick += (_, _) => EndHoverIfPointerLeftWindow();
         ConnectEvents();
     }
 
@@ -186,21 +192,28 @@ internal sealed class AppController : IDisposable
         _behaviorTimer.Stop();
         _pawTimer.Stop();
         _autoRunTimer.Stop();
-        _animator.Play("jumping", 3, FinishHoverPounce);
+        _hoverBoundsTimer.Start();
+        _animator.Play("jumping", 1, FinishHoverPounce);
     }
 
     private void OnPointerExited()
     {
-        if (!_hoverAnimation)
-            return;
-        _hoverAnimation = false;
-        ApplyShape();
+        EndHoverIfPointerLeftWindow();
     }
 
     private void FinishHoverPounce()
     {
         if (_hoverAnimation)
             _animator.Play("idle");
+    }
+
+    private void EndHoverIfPointerLeftWindow()
+    {
+        if (!_hoverAnimation || _window.IsPointerWithinWindowBounds())
+            return;
+        _hoverBoundsTimer.Stop();
+        _hoverAnimation = false;
+        ApplyShape();
     }
 
     private void ScheduleBehavior()
@@ -305,10 +318,10 @@ internal sealed class AppController : IDisposable
             available = opposite;
         }
         _movementFromAutoRun = fromAutoRun;
-        var stepMagnitude = (extended ? 8.0 : 3.5) * _settings.Scale;
+        var stepMagnitude = (extended ? 4.0 : 1.75) * _settings.Scale;
         var desiredDistance = extended
             ? Math.Min(available, _random.Next(260, 601) * _settings.Scale)
-            : _random.Next(12, 21) * stepMagnitude;
+            : _random.Next(12, 21) * 3.5 * _settings.Scale;
         if (desiredDistance < stepMagnitude)
         {
             LocalLog.Info($"run-skipped source={(fromAutoRun ? "auto" : "manual")} available={available:0.0}");
@@ -337,6 +350,7 @@ internal sealed class AppController : IDisposable
     private void FinishAutoAction()
     {
         _movementTimer.Stop();
+        _hoverBoundsTimer.Stop();
         _movementFromAutoRun = false;
         _autoAction = false;
         ApplyShape();
@@ -434,8 +448,14 @@ internal sealed class AppController : IDisposable
         try
         {
             _autostart.SetEnabled(enabled);
-            _settings.Autostart = enabled;
+            _settings.Autostart = _autostart.IsEnabled();
+            if (_settings.Autostart != enabled)
+                throw new InvalidOperationException("系统未保存开机启动设置。");
             SaveSettings();
+            LocalLog.Info($"autostart-enabled={enabled} command={AutostartService.ExpectedCommand}");
+            _tray.ShowBalloon(AppInfo.ProductName,
+                enabled ? "开机启动已开启。" : "开机启动已关闭。",
+                Forms.ToolTipIcon.Info);
         }
         catch (Exception ex)
         {

@@ -10,7 +10,7 @@
     "desktopUiControlledDuringQa": false
   },
   "fixes": {
-    "hover": "Uses the embedded jumping row for three pounces, matching Codex timing.",
+    "hover": "Uses the embedded jumping row once, then holds idle while the pointer remains inside fixed window bounds.",
     "autoRun": "When enabled, schedules a first run within 3 seconds and later runs every 12-25 seconds.",
     "settingsMigration": "Schema 1/2 settings are upgraded once to schema 3 with auto-run enabled; later user choices persist.",
     "tray": [
@@ -29,7 +29,8 @@
     "sourceChecks": true,
     "embeddedSelfTest": true,
     "singleInstance": true,
-    "offlineRuntime": true,
+    "offlineRuntime": false,
+    "userInitiatedNetworkOnly": true,
     "signature": "NotSigned"
   }
 }

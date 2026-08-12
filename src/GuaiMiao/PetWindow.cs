@@ -205,6 +205,17 @@ internal sealed class PetWindow : Window
             : Math.Max(0, Left - left);
     }
 
+    public bool IsPointerWithinWindowBounds()
+    {
+        if (!IsInitialized || ActualWidth <= 0 || ActualHeight <= 0)
+            return false;
+        var cursor = System.Windows.Forms.Cursor.Position;
+        var topLeft = PointToScreen(new WpfPoint(0, 0));
+        var bottomRight = PointToScreen(new WpfPoint(ActualWidth, ActualHeight));
+        return cursor.X >= topLeft.X && cursor.X < bottomRight.X &&
+               cursor.Y >= topLeft.Y && cursor.Y < bottomRight.Y;
+    }
+
     public void CloseForExit()
     {
         _allowClose = true;

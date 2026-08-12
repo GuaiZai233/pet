@@ -50,7 +50,7 @@ internal sealed class TrayIconService : IDisposable
         }
 
         var reset = NewItem("重置位置", () => ResetPositionRequested?.Invoke());
-        _autostart = NewItem("开机启动", () => AutostartChanged?.Invoke(!_autostart!.Checked));
+        _autostart = NewItem("开机启动（已关闭）", () => AutostartChanged?.Invoke(!_autostart!.Checked));
         var about = NewItem("关于", () => AboutRequested?.Invoke());
         _uninstall = NewItem("卸载", () => UninstallRequested?.Invoke());
         var exit = NewItem("退出", () => ExitRequested?.Invoke());
@@ -108,6 +108,7 @@ internal sealed class TrayIconService : IDisposable
         foreach (var pair in _sizes)
             pair.Value.Checked = Math.Abs(pair.Key - settings.Scale) < 0.01;
         _autostart.Checked = settings.Autostart;
+        _autostart.Text = settings.Autostart ? "开机启动（已开启）" : "开机启动（已关闭）";
         _autostart.Enabled = installationFeaturesAvailable;
         _autostart.ToolTipText = installationFeaturesAvailable ? string.Empty : "便携模式不可设置开机启动";
         _uninstall.Enabled = installationFeaturesAvailable;

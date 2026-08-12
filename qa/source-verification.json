@@ -12,7 +12,9 @@
     "animationStates": 10,
     "codexAtlasSha256": "01d4c02a36e5d484fd12cca3c43e56c6e79e0d41163470804ae275d9c8f859a7",
     "urls": [
-      "https://github.com/GuaiZai233/"
+      "https://api.github.com/repos/GuaiZai233/pet/releases/latest",
+      "https://github.com/GuaiZai233/pet",
+      "https://github.com/GuaiZai233/pet/releases/download/"
     ],
     "desktopBehaviors": [
       "MouseEnter",
@@ -23,8 +25,18 @@
       "\"自动跑动（已开启）\"",
       "\"立即跑动（测试）\"",
       "AutoRunEnabled",
+      "\"开机启动（已开启）\"",
+      "ExpectedCommand",
+      "key.Flush()",
       "_animator.Play(\"review\"",
-      "_animator.Play(\"jumping\", 3",
+      "_animator.Play(\"jumping\", 1",
+      "IsPointerWithinWindowBounds",
+      "LatestReleaseApiUrl",
+      "GitHubUpdateService",
+      "\"检查更新\"",
+      "DownloadAsync",
+      "SHA256.HashDataAsync",
+      "LaunchInstaller",
       "ScheduleAutoRun(runSoon: true)",
       "settings-migrated schema=3",
       "run-start source=",

@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Windows.Media.Imaging;
 using GuaiMiao.Animation;
+using GuaiMiao.Infrastructure;
 using GuaiMiao.Models;
 using GuaiMiao.Services;
 
@@ -58,7 +59,7 @@ internal static class SelfTest
                 errors.Add("内嵌 Codex 图集哈希不匹配。");
             checks["animationStates"] = ExpectedFrames.Count;
             var hoverDurations = catalog.Get("jumping").DurationsMs;
-            checks["hoverAnimation"] = "jumping x3";
+            checks["hoverAnimation"] = "jumping x1, then idle while pointer remains";
             checks["hoverDurationsMs"] = hoverDurations;
             if (!hoverDurations.SequenceEqual(new[] { 140, 140, 140, 140, 280 }))
                 errors.Add("悬停原地扑动画节奏未与 Codex 对齐。");
@@ -99,6 +100,11 @@ internal static class SelfTest
 
             checks["aboutText"] = AppInfo.AboutText;
             checks["homepage"] = AppInfo.HomepageUrl;
+            checks["latestReleaseApi"] = AppInfo.LatestReleaseApiUrl;
+            checks["autostartCommand"] = AutostartService.ExpectedCommand;
+            if (!AutostartService.ExpectedCommand.Contains(AppInfo.InstalledArgument, StringComparison.Ordinal) ||
+                !AutostartService.ExpectedCommand.Contains(AppPaths.InstalledExecutable, StringComparison.OrdinalIgnoreCase))
+                errors.Add("开机启动命令不完整。");
             var defaultSettings = new AppSettings();
             checks["settingsSchema"] = defaultSettings.SchemaVersion;
             checks["autoRunDefault"] = defaultSettings.AutoRunEnabled;

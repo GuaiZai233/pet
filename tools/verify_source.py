@@ -69,17 +69,24 @@ def main() -> None:
         errors.append("embedded Codex atlas hash mismatch")
 
     source_text = "\n".join(path.read_text("utf-8") for path in SOURCE.rglob("*.cs"))
-    allowed_url = "https://github.com/GuaiZai233/"
+    allowed_urls = [
+        "https://api.github.com/repos/GuaiZai233/pet/releases/latest",
+        "https://github.com/GuaiZai233/pet",
+        "https://github.com/GuaiZai233/pet/releases/download/",
+    ]
     urls = sorted(set(re.findall(r"https?://[^\"\s]+", source_text)))
     checks["urls"] = urls
-    if urls != [allowed_url]:
+    if urls != allowed_urls:
         errors.append(f"unexpected URL set: {urls}")
     if "此形象由Codex生成，仅供个人使用！" not in source_text:
         errors.append("exact About text is missing")
     required_behaviors = [
         'MouseEnter', 'MouseLeave', 'PointerEntered', 'PointerExited',
         '"立即思考"', '"自动跑动（已开启）"', '"立即跑动（测试）"', 'AutoRunEnabled',
-        '_animator.Play("review"', '_animator.Play("jumping", 3',
+        '"开机启动（已开启）"', 'ExpectedCommand', 'key.Flush()',
+        '_animator.Play("review"', '_animator.Play("jumping", 1', 'IsPointerWithinWindowBounds',
+        'LatestReleaseApiUrl', 'GitHubUpdateService', '"检查更新"', 'DownloadAsync',
+        'SHA256.HashDataAsync', 'LaunchInstaller',
         'ScheduleAutoRun(runSoon: true)', 'settings-migrated schema=3', 'run-start source=',
         '"running-left"', '"running-right"',
     ]

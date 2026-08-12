@@ -5,8 +5,11 @@ internal static class AppInfo
     public const string ProductName = "乖喵";
     public const string Description = "乖喵桌面宠物";
     public const string Publisher = "GuaiZai233";
-    public const string HomepageLabel = "github.com/GuaiZai233";
-    public const string HomepageUrl = "https://github.com/GuaiZai233/";
+    public const string HomepageLabel = "github.com/GuaiZai233/pet";
+    public const string HomepageUrl = "https://github.com/GuaiZai233/pet";
+    public const string LatestReleaseApiUrl = "https://api.github.com/repos/GuaiZai233/pet/releases/latest";
+    public const string ReleaseDownloadPrefix = "https://github.com/GuaiZai233/pet/releases/download/";
+    public const string ReleaseAssetName = "乖喵.exe";
     public const string AboutText = "此形象由Codex生成，仅供个人使用！";
     public const string RunValueName = "乖喵";
     public const string MutexName = @"Local\GuaiMiao-GuaiZai233-v1";
