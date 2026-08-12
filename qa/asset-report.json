@@ -1,0 +1,119 @@
+{
+  "ok": true,
+  "cell": [
+    192,
+    208
+  ],
+  "mainAtlas": {
+    "size": [
+      1536,
+      2288
+    ],
+    "sha256": "3AAB6C2D5FEEC1334F8C5563F1E67ACF473CADD6FC1E79DD93ED4AB1D3B10EED"
+  },
+  "pawStrip": {
+    "size": [
+      1536,
+      208
+    ],
+    "sha256": "543B22A59D0B5ADFEB67A8ED92ED5E79A870DA7D6673D631D1688C43F810C3C2",
+    "frames": [
+      {
+        "frame": 0,
+        "bbox": [
+          34,
+          7,
+          153,
+          202
+        ],
+        "visiblePixels": 17663
+      },
+      {
+        "frame": 1,
+        "bbox": [
+          34,
+          7,
+          155,
+          202
+        ],
+        "visiblePixels": 17766
+      },
+      {
+        "frame": 2,
+        "bbox": [
+          34,
+          8,
+          154,
+          202
+        ],
+        "visiblePixels": 17629
+      },
+      {
+        "frame": 3,
+        "bbox": [
+          34,
+          7,
+          155,
+          202
+        ],
+        "visiblePixels": 17734
+      },
+      {
+        "frame": 4,
+        "bbox": [
+          33,
+          7,
+          154,
+          202
+        ],
+        "visiblePixels": 17800
+      },
+      {
+        "frame": 5,
+        "bbox": [
+          34,
+          7,
+          155,
+          202
+        ],
+        "visiblePixels": 17804
+      },
+      {
+        "frame": 6,
+        "bbox": [
+          34,
+          8,
+          155,
+          202
+        ],
+        "visiblePixels": 17671
+      },
+      {
+        "frame": 7,
+        "bbox": [
+          34,
+          7,
+          156,
+          202
+        ],
+        "visiblePixels": 17794
+      }
+    ]
+  },
+  "icon": {
+    "sha256": "7D26FB8BB61E10DA159304A31FA10EA16A4C5B12C13E24C51709703462199307"
+  },
+  "preview": {
+    "sha256": "FDA6FC4E183C2C2972F381AFA430283BC7FE8F4A8CB9A7FAC281742AE752741A",
+    "durationsMs": [
+      160,
+      140,
+      140,
+      150,
+      300,
+      160,
+      180,
+      160
+    ]
+  }
+}

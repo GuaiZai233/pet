@@ -1,0 +1,26 @@
+# .NET build output
+**/bin/
+**/obj/
+artifacts/
+
+# Local generation workspace and generated QA media
+paw-generation/
+qa/*.gif
+qa/*.png
+
+# IDE and OS files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+.DS_Store
+Thumbs.db
+
+# Local runtime state
+*.log
+*.tmp
+
+# Release binaries are produced outside this repository
+*.exe
+*.zip

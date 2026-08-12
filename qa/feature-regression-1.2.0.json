@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "version": "1.2.0",
+  "diagnosis": {
+    "installedCodexVersion": "26.803.10989.0",
+    "codexHoverEvent": "onPointerEnter",
+    "codexHoverState": "jumping",
+    "codexHoverSequence": "jumping x3, then idle",
+    "existingAutoRunSettingObserved": false,
+    "desktopUiControlledDuringQa": false
+  },
+  "fixes": {
+    "hover": "Uses the embedded jumping row for three pounces, matching Codex timing.",
+    "autoRun": "When enabled, schedules a first run within 3 seconds and later runs every 12-25 seconds.",
+    "settingsMigration": "Schema 1/2 settings are upgraded once to schema 3 with auto-run enabled; later user choices persist.",
+    "tray": [
+      "自动跑动（已开启/已关闭）",
+      "立即跑动（测试）"
+    ],
+    "logging": [
+      "runtime-settings",
+      "auto-run-enabled",
+      "auto-run-scheduled",
+      "run-start",
+      "run-finished"
+    ]
+  },
+  "verification": {
+    "sourceChecks": true,
+    "embeddedSelfTest": true,
+    "singleInstance": true,
+    "offlineRuntime": true,
+    "signature": "NotSigned"
+  }
+}

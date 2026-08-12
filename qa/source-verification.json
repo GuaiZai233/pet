@@ -1,0 +1,36 @@
+{
+  "ok": true,
+  "checks": {
+    "mainAtlasSize": [
+      1536,
+      2288
+    ],
+    "pawAtlasSize": [
+      1536,
+      208
+    ],
+    "animationStates": 10,
+    "codexAtlasSha256": "01d4c02a36e5d484fd12cca3c43e56c6e79e0d41163470804ae275d9c8f859a7",
+    "urls": [
+      "https://github.com/GuaiZai233/"
+    ],
+    "desktopBehaviors": [
+      "MouseEnter",
+      "MouseLeave",
+      "PointerEntered",
+      "PointerExited",
+      "\"立即思考\"",
+      "\"自动跑动（已开启）\"",
+      "\"立即跑动（测试）\"",
+      "AutoRunEnabled",
+      "_animator.Play(\"review\"",
+      "_animator.Play(\"jumping\", 3",
+      "ScheduleAutoRun(runSoon: true)",
+      "settings-migrated schema=3",
+      "run-start source=",
+      "\"running-left\"",
+      "\"running-right\""
+    ]
+  },
+  "errors": []
+}

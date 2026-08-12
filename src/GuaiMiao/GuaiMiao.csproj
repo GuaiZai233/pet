@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>乖喵</AssemblyName>
+    <RootNamespace>GuaiMiao</RootNamespace>
+    <StartupObject>GuaiMiao.Program</StartupObject>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\GuaiMiao.ico</ApplicationIcon>
+    <Version>1.2.0</Version>
+    <FileVersion>1.2.0.0</FileVersion>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <Company>GuaiZai233</Company>
+    <Product>乖喵桌面宠物</Product>
+    <Description>乖喵桌面宠物</Description>
+    <Copyright>仅供个人使用</Copyright>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <PublishTrimmed>false</PublishTrimmed>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\spritesheet.png" LogicalName="GuaiMiao.Assets.spritesheet.png" />
+    <EmbeddedResource Include="Assets\codex-spritesheet.webp" LogicalName="GuaiMiao.Assets.codex-spritesheet.webp" />
+    <EmbeddedResource Include="Assets\paw-glass.png" LogicalName="GuaiMiao.Assets.paw-glass.png" />
+    <EmbeddedResource Include="Assets\animations.json" LogicalName="GuaiMiao.Assets.animations.json" />
+    <EmbeddedResource Include="Assets\GuaiMiao.ico" LogicalName="GuaiMiao.Assets.GuaiMiao.ico" />
+  </ItemGroup>
+</Project>

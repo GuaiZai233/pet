@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "product": "\u4E56\u55B5",
+  "version": "1.0.0.0",
+  "os": "Microsoft Windows 10.0.26100",
+  "runtime": ".NET 8.0.29",
+  "architecture": "X64",
+  "checks": {
+    "windows": true,
+    "x64Process": true,
+    "cellSize": [
+      192,
+      208
+    ],
+    "codexAtlasSha256": "01D4C02A36E5D484FD12CCA3C43E56C6E79E0D41163470804AE275D9C8F859A7",
+    "animationStates": 10
+  },
+  "errors": [],
+  "testedAt": "2026-08-12T18:56:10.3207648+08:00"
+}

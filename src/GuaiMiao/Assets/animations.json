@@ -1,0 +1,16 @@
+{
+  "cellWidth": 192,
+  "cellHeight": 208,
+  "states": {
+    "idle": { "source": "main", "row": 0, "frames": 6, "durationsMs": [280, 110, 110, 140, 140, 320] },
+    "running-right": { "source": "main", "row": 1, "frames": 8, "durationsMs": [120, 120, 120, 120, 120, 120, 120, 220] },
+    "running-left": { "source": "main", "row": 2, "frames": 8, "durationsMs": [120, 120, 120, 120, 120, 120, 120, 220] },
+    "waving": { "source": "main", "row": 3, "frames": 4, "durationsMs": [140, 140, 140, 280] },
+    "jumping": { "source": "main", "row": 4, "frames": 5, "durationsMs": [140, 140, 140, 140, 280] },
+    "failed": { "source": "main", "row": 5, "frames": 8, "durationsMs": [140, 140, 140, 140, 140, 140, 140, 240] },
+    "waiting": { "source": "main", "row": 6, "frames": 6, "durationsMs": [150, 150, 150, 150, 150, 260] },
+    "running": { "source": "main", "row": 7, "frames": 6, "durationsMs": [120, 120, 120, 120, 120, 220] },
+    "review": { "source": "main", "row": 8, "frames": 6, "durationsMs": [150, 150, 150, 150, 150, 280] },
+    "paw-glass": { "source": "paw", "row": 0, "frames": 8, "durationsMs": [160, 140, 140, 150, 300, 160, 180, 160] }
+  }
+}
