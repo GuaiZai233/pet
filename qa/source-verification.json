@@ -10,7 +10,7 @@
       208
     ],
     "animationStates": 10,
-    "idleLoopDurationMs": 3440,
+    "idleLoopDurationMs": 4480,
     "codexAtlasSha256": "33eebf4e12a49ef0c50d3052f9ed718fa7e7b5a59995a0851c29de17ad7cfab4",
     "urls": [
       "https://api.github.com/repos/GuaiZai233/pet/releases/latest",

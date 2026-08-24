@@ -110,9 +110,9 @@ if (Test-Path -LiteralPath $SourceZip) {
 }
 Compress-Archive -Path (Join-Path $stageFull '*') -DestinationPath $SourceZip -CompressionLevel Optimal
 
-$RegressionSource = Join-Path $ProjectRoot 'qa\feature-regression-1.2.0.json'
+$RegressionSource = Join-Path $ProjectRoot 'qa\feature-regression-1.2.1.json'
 if (Test-Path -LiteralPath $RegressionSource) {
-    Copy-Item -LiteralPath $RegressionSource -Destination (Join-Path $QaDir 'feature-regression-1.2.0.json') -Force
+    Copy-Item -LiteralPath $RegressionSource -Destination (Join-Path $QaDir 'feature-regression-1.2.1.json') -Force
 }
 
 $buildReport = [ordered]@{

@@ -61,9 +61,9 @@ internal static class SelfTest
             var idleDurations = catalog.Get("idle").DurationsMs;
             checks["idleDurationsMs"] = idleDurations;
             checks["idleLoopDurationMs"] = idleDurations.Sum();
-            if (!idleDurations.SequenceEqual(new[] { 1000, 260, 260, 360, 360, 1200 }) ||
-                idleDurations.Sum() != 3440)
-                errors.Add("待机循环没有保持放慢后的 3.44 秒节奏。");
+            if (!idleDurations.SequenceEqual(new[] { 1000, 260, 260, 1400, 360, 1200 }) ||
+                idleDurations.Sum() != 4480)
+                errors.Add("待机循环的第 4 帧没有保持 1.4 秒停留。");
             var hoverDurations = catalog.Get("jumping").DurationsMs;
             checks["hoverAnimation"] = "jumping x3, then idle while pointer remains";
             checks["hoverDurationsMs"] = hoverDurations;
@@ -177,7 +177,7 @@ internal static class SelfTest
             if (defaultSettings.SchemaVersion != 3 || !defaultSettings.AutoRunEnabled)
                 errors.Add("自动跑动的默认设置或设置版本错误。");
 
-            var version = new Version(1, 2, 0, 0);
+            var version = new Version(1, 2, 1, 0);
             var sameVersionHotfix = SelfInstaller.ShouldUpgrade(version, version, sameBinary: false);
             var identicalBinarySkipped = !SelfInstaller.ShouldUpgrade(version, version, sameBinary: true);
             var downgradeSkipped = !SelfInstaller.ShouldUpgrade(new Version(1, 1, 0, 0), version,

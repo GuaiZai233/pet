@@ -2,7 +2,7 @@
   "cellWidth": 192,
   "cellHeight": 208,
   "states": {
-    "idle": { "source": "main", "row": 0, "frames": 6, "durationsMs": [1000, 260, 260, 360, 360, 1200] },
+    "idle": { "source": "main", "row": 0, "frames": 6, "durationsMs": [1000, 260, 260, 1400, 360, 1200] },
     "running-right": { "source": "main", "row": 1, "frames": 8, "durationsMs": [120, 120, 120, 120, 120, 120, 120, 220] },
     "running-left": { "source": "main", "row": 2, "frames": 8, "durationsMs": [120, 120, 120, 120, 120, 120, 120, 220] },
     "waving": { "source": "main", "row": 3, "frames": 4, "durationsMs": [140, 140, 140, 280] },

@@ -62,7 +62,7 @@ def main() -> None:
         actual = animation["states"].get(name, {}).get("frames")
         if actual != count:
             errors.append(f"{name} frame count is {actual}, expected {count}")
-    expected_idle_durations = [1000, 260, 260, 360, 360, 1200]
+    expected_idle_durations = [1000, 260, 260, 1400, 360, 1200]
     idle_durations = animation["states"].get("idle", {}).get("durationsMs")
     checks["idleLoopDurationMs"] = sum(idle_durations or [])
     if idle_durations != expected_idle_durations:
