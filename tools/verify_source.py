@@ -62,6 +62,11 @@ def main() -> None:
         actual = animation["states"].get(name, {}).get("frames")
         if actual != count:
             errors.append(f"{name} frame count is {actual}, expected {count}")
+    expected_idle_durations = [1000, 260, 260, 360, 360, 1200]
+    idle_durations = animation["states"].get("idle", {}).get("durationsMs")
+    checks["idleLoopDurationMs"] = sum(idle_durations or [])
+    if idle_durations != expected_idle_durations:
+        errors.append(f"idle durations are {idle_durations}, expected {expected_idle_durations}")
 
     codex_hash = hash_file(ASSETS / "codex-spritesheet.webp")
     checks["codexAtlasSha256"] = codex_hash

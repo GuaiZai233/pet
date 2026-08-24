@@ -58,6 +58,12 @@ internal static class SelfTest
             if (!atlasHash.Equals(AppInfo.CodexAtlasSha256, StringComparison.OrdinalIgnoreCase))
                 errors.Add("内嵌 Codex 图集哈希不匹配。");
             checks["animationStates"] = ExpectedFrames.Count;
+            var idleDurations = catalog.Get("idle").DurationsMs;
+            checks["idleDurationsMs"] = idleDurations;
+            checks["idleLoopDurationMs"] = idleDurations.Sum();
+            if (!idleDurations.SequenceEqual(new[] { 1000, 260, 260, 360, 360, 1200 }) ||
+                idleDurations.Sum() != 3440)
+                errors.Add("待机循环没有保持放慢后的 3.44 秒节奏。");
             var hoverDurations = catalog.Get("jumping").DurationsMs;
             checks["hoverAnimation"] = "jumping x3, then idle while pointer remains";
             checks["hoverDurationsMs"] = hoverDurations;
