@@ -10,8 +10,10 @@
     "desktopUiControlledDuringQa": false
   },
   "fixes": {
-    "hover": "Uses the embedded jumping row once, then holds idle while the pointer remains inside fixed window bounds.",
-    "autoRun": "When enabled, schedules a first run within 3 seconds and later runs every 12-25 seconds.",
+    "hover": "Uses Codex jumping x3 once per pointer entry, then holds idle; three outside samples beyond an 8 DIP margin are required before rearming.",
+    "drag": "Horizontal drag deltas select running-left or running-right after a 2 DIP direction debounce; release restores the configured shape.",
+    "automaticDwell": "Random shapes play two loops and automatic events use a 45-75 second quiet interval.",
+    "autoRun": "When enabled, schedules a first run within 6 seconds and later runs use the same 45-75 second quiet interval.",
     "settingsMigration": "Schema 1/2 settings are upgraded once to schema 3 with auto-run enabled; later user choices persist.",
     "tray": [
       "自动跑动（已开启/已关闭）",
@@ -22,7 +24,12 @@
       "auto-run-enabled",
       "auto-run-scheduled",
       "run-start",
-      "run-finished"
+      "run-finished",
+      "hover-start",
+      "hover-ended",
+      "drag-start",
+      "drag-direction",
+      "drag-finished"
     ]
   },
   "verification": {

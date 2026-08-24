@@ -89,6 +89,8 @@ internal sealed class PetWindow : Window
     public event Action? SingleClicked;
     public event Action? DoubleClicked;
     public event Action? RightClicked;
+    public event Action? DragStarted;
+    public event Action<double>? DragMoved;
     public event Action? DragFinished;
     public event Action? PointerEntered;
     public event Action? PointerExited;
@@ -205,15 +207,18 @@ internal sealed class PetWindow : Window
             : Math.Max(0, Left - left);
     }
 
-    public bool IsPointerWithinWindowBounds()
+    public bool IsPointerWithinWindowBounds(double margin = 0)
     {
         if (!IsInitialized || ActualWidth <= 0 || ActualHeight <= 0)
             return false;
         var cursor = System.Windows.Forms.Cursor.Position;
         var topLeft = PointToScreen(new WpfPoint(0, 0));
         var bottomRight = PointToScreen(new WpfPoint(ActualWidth, ActualHeight));
-        return cursor.X >= topLeft.X && cursor.X < bottomRight.X &&
-               cursor.Y >= topLeft.Y && cursor.Y < bottomRight.Y;
+        var dpi = VisualTreeHelper.GetDpi(this);
+        var marginX = Math.Max(0, margin) * dpi.DpiScaleX;
+        var marginY = Math.Max(0, margin) * dpi.DpiScaleY;
+        return cursor.X >= topLeft.X - marginX && cursor.X < bottomRight.X + marginX &&
+               cursor.Y >= topLeft.Y - marginY && cursor.Y < bottomRight.Y + marginY;
     }
 
     public void CloseForExit()
@@ -320,10 +325,16 @@ internal sealed class PetWindow : Window
         var current = PointToScreen(e.GetPosition(this));
         if (!_dragging && Math.Abs(current.X - _mouseDownScreen.X) + Math.Abs(current.Y - _mouseDownScreen.Y) < 5)
             return;
-        _dragging = true;
+        if (!_dragging)
+        {
+            _dragging = true;
+            DragStarted?.Invoke();
+        }
         var dpi = VisualTreeHelper.GetDpi(this);
+        var previousLeft = Left;
         Left = _startLeft + (current.X - _mouseDownScreen.X) / dpi.DpiScaleX;
         Top = _startTop + (current.Y - _mouseDownScreen.Y) / dpi.DpiScaleY;
+        DragMoved?.Invoke(Left - previousLeft);
     }
 
     private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

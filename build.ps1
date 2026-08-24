@@ -9,17 +9,49 @@ $OutputDir = Join-Path $WorkspaceRoot 'outputs\guai-miao-desktop'
 $QaDir = Join-Path $OutputDir 'qa'
 $PublishDir = Join-Path $ProjectRoot 'artifacts\publish'
 $StageDir = Join-Path $ProjectRoot 'artifacts\source-package'
-
-if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
-    throw '.NET 8 SDK 未安装或 dotnet 不在 PATH 中。'
+$PortableDotnet = Join-Path $WorkspaceRoot 'work\.tooling\dotnet-8.0.423\dotnet.exe'
+$LocalFeed = Join-Path $WorkspaceRoot 'work\.tooling\local-feed'
+$LocalNugetPackages = Join-Path $WorkspaceRoot 'work\.tooling\nuget-packages'
+$NugetPackages = if (Test-Path -LiteralPath $LocalNugetPackages) {
+    $LocalNugetPackages
+} else {
+    Join-Path $ProjectRoot 'artifacts\nuget-packages'
 }
+$DotnetCliHome = Join-Path $ProjectRoot 'artifacts\dotnet-cli-home'
 
+New-Item -ItemType Directory -Force $DotnetCliHome, $NugetPackages | Out-Null
+$env:DOTNET_CLI_HOME = $DotnetCliHome
+$env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+$env:DOTNET_ADD_GLOBAL_TOOLS_TO_PATH = '0'
+$env:DOTNET_NOLOGO = '1'
+$env:NUGET_PACKAGES = $NugetPackages
+
+$Dotnet = if (Test-Path -LiteralPath $PortableDotnet) {
+    $PortableDotnet
+} else {
+    (Get-Command dotnet -ErrorAction SilentlyContinue).Source
+}
+if (-not $Dotnet -or -not (& $Dotnet --list-sdks)) {
+    throw '.NET 8 SDK 未安装；系统 dotnet 可能只有运行时。'
+}
 New-Item -ItemType Directory -Force $OutputDir, $QaDir | Out-Null
-dotnet publish $Project -c Release -r win-x64 --self-contained true `
-    -p:PublishSingleFile=true -p:PublishTrimmed=false `
-    -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true `
-    -p:NuGetAudit=false `
-    -o $PublishDir
+$PublishArguments = @(
+    'publish', $Project,
+    '-c', 'Release',
+    '-r', 'win-x64',
+    '--self-contained', 'true',
+    '-p:PublishSingleFile=true',
+    '-p:PublishTrimmed=false',
+    '-p:IncludeNativeLibrariesForSelfExtract=true',
+    '-p:EnableCompressionInSingleFile=true',
+    '-p:NuGetAudit=false',
+    '-o', $PublishDir
+)
+if (Test-Path -LiteralPath $LocalFeed) {
+    $PublishArguments += @('--source', $LocalFeed)
+}
+& $Dotnet @PublishArguments
 if ($LASTEXITCODE -ne 0) {
     throw "dotnet publish 失败，退出码：$LASTEXITCODE"
 }

@@ -69,6 +69,8 @@ def main() -> None:
         errors.append("embedded Codex atlas hash mismatch")
 
     source_text = "\n".join(path.read_text("utf-8") for path in SOURCE.rglob("*.cs"))
+    if EXPECTED_CODEX_HASH.upper() not in source_text:
+        errors.append("AppInfo Codex atlas hash is not synchronized")
     allowed_urls = [
         "https://api.github.com/repos/GuaiZai233/pet/releases/latest",
         "https://github.com/GuaiZai233/pet",
@@ -84,11 +86,12 @@ def main() -> None:
         'MouseEnter', 'MouseLeave', 'PointerEntered', 'PointerExited',
         '"立即思考"', '"自动跑动（已开启）"', '"立即跑动（测试）"', 'AutoRunEnabled',
         '"开机启动（已开启）"', 'ExpectedCommand', 'key.Flush()',
-        '_animator.Play("review"', '_animator.Play("jumping", 1', 'IsPointerWithinWindowBounds',
+        '_animator.Play("review"', 'PetInteractionPolicy.HoverPounceLoops', 'HoverInteractionGate',
+        'DragStarted', 'DragMoved', 'DragDirectionTracker', 'IsPointerWithinWindowBounds',
         'LatestReleaseApiUrl', 'GitHubUpdateService', '"检查更新"', 'DownloadAsync',
         'SHA256.HashDataAsync', 'LaunchInstaller',
         'ScheduleAutoRun(runSoon: true)', 'settings-migrated schema=3', 'run-start source=',
-        '"running-left"', '"running-right"',
+        '"running-left"', '"running-right"', 'AutomaticDelayMinSeconds = 45',
     ]
     checks["desktopBehaviors"] = required_behaviors
     for behavior in required_behaviors:

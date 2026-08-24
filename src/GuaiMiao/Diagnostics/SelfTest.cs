@@ -59,10 +59,70 @@ internal static class SelfTest
                 errors.Add("内嵌 Codex 图集哈希不匹配。");
             checks["animationStates"] = ExpectedFrames.Count;
             var hoverDurations = catalog.Get("jumping").DurationsMs;
-            checks["hoverAnimation"] = "jumping x1, then idle while pointer remains";
+            checks["hoverAnimation"] = "jumping x3, then idle while pointer remains";
             checks["hoverDurationsMs"] = hoverDurations;
             if (!hoverDurations.SequenceEqual(new[] { 140, 140, 140, 140, 280 }))
                 errors.Add("悬停原地扑动画节奏未与 Codex 对齐。");
+            if (PetInteractionPolicy.HoverPounceLoops != 3)
+                errors.Add("悬停原地扑没有连续播放三次。");
+
+            var hoverGate = new HoverInteractionGate();
+            var firstHover = hoverGate.TryEnter();
+            var duplicateHoverRejected = !hoverGate.TryEnter();
+            var insideDoesNotEnd = hoverGate.ObservePointer(true) == HoverExitResult.None;
+            var firstOutsideDoesNotEnd = hoverGate.ObservePointer(false) == HoverExitResult.None;
+            var insideResetsExitDebounce = hoverGate.ObservePointer(true) == HoverExitResult.None;
+            var exitResult = HoverExitResult.None;
+            for (var sample = 0; sample < PetInteractionPolicy.HoverExitSamples; sample++)
+                exitResult = hoverGate.ObservePointer(false);
+            var exitsAfterDebounce = exitResult == HoverExitResult.ActiveHoverEnded;
+            checks["hoverDebounce"] = new
+            {
+                firstHover,
+                duplicateHoverRejected,
+                insideDoesNotEnd,
+                firstOutsideDoesNotEnd,
+                insideResetsExitDebounce,
+                exitsAfterDebounce,
+                samples = PetInteractionPolicy.HoverExitSamples,
+                margin = PetInteractionPolicy.HoverExitMargin
+            };
+            if (!firstHover || !duplicateHoverRejected || !insideDoesNotEnd || !firstOutsideDoesNotEnd ||
+                !insideResetsExitDebounce || !exitsAfterDebounce)
+                errors.Add("悬停进入锁和离开防抖未生效。");
+
+            hoverGate.SuppressUntilExit();
+            var suppressedEnterRejected = !hoverGate.TryEnter();
+            for (var sample = 0; sample < PetInteractionPolicy.HoverExitSamples; sample++)
+                exitResult = hoverGate.ObservePointer(false);
+            var suppressionCleared = exitResult == HoverExitResult.SuppressionCleared && hoverGate.TryEnter();
+            checks["postDragHoverSuppression"] = new { suppressedEnterRejected, suppressionCleared };
+            if (!suppressedEnterRejected || !suppressionCleared)
+                errors.Add("拖动后的悬停抑制未等到指针真正离开。");
+
+            var dragDirection = new DragDirectionTracker();
+            var smallRightIgnored = dragDirection.Observe(0.75) == 0 && dragDirection.Observe(0.75) == 0;
+            var rightDetected = dragDirection.Observe(0.75) == 1;
+            var reverseJitterIgnored = dragDirection.Observe(-0.75) == 1 && dragDirection.Observe(-0.75) == 1;
+            var leftDetected = dragDirection.Observe(-0.75) == -1;
+            checks["dragDirectionDebounce"] = new
+            {
+                smallRightIgnored,
+                rightDetected,
+                reverseJitterIgnored,
+                leftDetected,
+                threshold = PetInteractionPolicy.DragDirectionThreshold
+            };
+            if (!smallRightIgnored || !rightDetected || !reverseJitterIgnored || !leftDetected)
+                errors.Add("拖动方向防抖或左右步态切换不正确。");
+            checks["automaticDwellSeconds"] = new[]
+            {
+                PetInteractionPolicy.AutomaticDelayMinSeconds,
+                PetInteractionPolicy.AutomaticDelayMaxExclusiveSeconds - 1
+            };
+            if (PetInteractionPolicy.AutomaticDelayMinSeconds < 45 ||
+                PetInteractionPolicy.AutomaticActionLoops < 2)
+                errors.Add("自动造型停留或间隔仍然过短。");
 
             var testSuffix = $"self-test-{Environment.ProcessId}";
             var testMutexName = $@"Local\GuaiMiao-{testSuffix}";

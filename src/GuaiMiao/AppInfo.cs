@@ -18,5 +18,5 @@ internal static class AppInfo
     public const string PortableArgument = "--portable";
     public const string UninstallHelperArgument = "--uninstall-helper";
     public const string SelfTestArgument = "--self-test";
-    public const string CodexAtlasSha256 = "01D4C02A36E5D484FD12CCA3C43E56C6E79E0D41163470804AE275D9C8F859A7";
+    public const string CodexAtlasSha256 = "33EEBF4E12A49EF0C50D3052F9ED718FA7E7B5A59995A0851C29DE17AD7CFAB4";
 }

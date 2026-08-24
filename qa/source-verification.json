@@ -29,7 +29,11 @@
       "ExpectedCommand",
       "key.Flush()",
       "_animator.Play(\"review\"",
-      "_animator.Play(\"jumping\", 1",
+      "PetInteractionPolicy.HoverPounceLoops",
+      "HoverInteractionGate",
+      "DragStarted",
+      "DragMoved",
+      "DragDirectionTracker",
       "IsPointerWithinWindowBounds",
       "LatestReleaseApiUrl",
       "GitHubUpdateService",
@@ -41,7 +45,8 @@
       "settings-migrated schema=3",
       "run-start source=",
       "\"running-left\"",
-      "\"running-right\""
+      "\"running-right\"",
+      "AutomaticDelayMinSeconds = 45"
     ]
   },
   "errors": []

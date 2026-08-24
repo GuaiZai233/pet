@@ -24,12 +24,14 @@ internal sealed class AppController : IDisposable
     private readonly DispatcherTimer _autoRunTimer;
     private readonly DispatcherTimer _movementTimer;
     private readonly DispatcherTimer _hoverBoundsTimer;
+    private readonly HoverInteractionGate _hoverGate = new();
+    private readonly DragDirectionTracker _dragDirection = new();
     private AppSettings _settings;
     private bool _autoAction;
     private int _movementTicks;
     private double _movementStep;
     private bool _movementFromAutoRun;
-    private bool _hoverAnimation;
+    private bool _dragging;
     private bool _exiting;
 
     public AppController(System.Windows.Application application, BootstrapResult bootstrap,
@@ -102,7 +104,9 @@ internal sealed class AppController : IDisposable
         _window.SingleClicked += OnPetSingleClick;
         _window.DoubleClicked += TogglePetShape;
         _window.RightClicked += _tray.ShowAtCursor;
-        _window.DragFinished += SavePosition;
+        _window.DragStarted += OnDragStarted;
+        _window.DragMoved += OnDragMoved;
+        _window.DragFinished += OnDragFinished;
         _window.PointerEntered += OnPointerEntered;
         _window.PointerExited += OnPointerExited;
         _window.TaskbarCreated += _tray.Recreate;
@@ -186,14 +190,14 @@ internal sealed class AppController : IDisposable
 
     private void OnPointerEntered()
     {
-        if (_settings.MousePassThrough || _autoAction || _hoverAnimation)
+        if (_settings.MousePassThrough || _autoAction || _dragging || !_hoverGate.TryEnter())
             return;
-        _hoverAnimation = true;
         _behaviorTimer.Stop();
         _pawTimer.Stop();
         _autoRunTimer.Stop();
         _hoverBoundsTimer.Start();
-        _animator.Play("jumping", 1, FinishHoverPounce);
+        LocalLog.Info("hover-start pounces=3");
+        _animator.Play("jumping", PetInteractionPolicy.HoverPounceLoops, FinishHoverPounce);
     }
 
     private void OnPointerExited()
@@ -203,38 +207,45 @@ internal sealed class AppController : IDisposable
 
     private void FinishHoverPounce()
     {
-        if (_hoverAnimation)
+        if (_hoverGate.Active && !_dragging)
             _animator.Play("idle");
     }
 
     private void EndHoverIfPointerLeftWindow()
     {
-        if (!_hoverAnimation || _window.IsPointerWithinWindowBounds())
+        if (!_hoverGate.Monitoring)
             return;
-        _hoverBoundsTimer.Stop();
-        _hoverAnimation = false;
+        var result = _hoverGate.ObservePointer(
+            _window.IsPointerWithinWindowBounds(PetInteractionPolicy.HoverExitMargin));
+        if (result == HoverExitResult.None)
+            return;
+        LocalLog.Info(result == HoverExitResult.ActiveHoverEnded
+            ? "hover-ended"
+            : "hover-suppression-cleared");
         ApplyShape();
     }
 
     private void ScheduleBehavior()
     {
-        if (_settings.Shape != ShapeMode.Auto || _autoAction || _hoverAnimation)
+        if (_settings.Shape != ShapeMode.Auto || _autoAction || _dragging || _hoverGate.Monitoring)
             return;
-        _behaviorTimer.Interval = TimeSpan.FromSeconds(_random.Next(12, 31));
+        _behaviorTimer.Interval = TimeSpan.FromSeconds(_random.Next(
+            PetInteractionPolicy.AutomaticDelayMinSeconds,
+            PetInteractionPolicy.AutomaticDelayMaxExclusiveSeconds));
         _behaviorTimer.Start();
     }
 
     private void SchedulePawMoment()
     {
-        if (_settings.Shape != ShapeMode.Auto || _pawTimer.IsEnabled || _hoverAnimation)
+        if (_settings.Shape != ShapeMode.Auto || _pawTimer.IsEnabled || _dragging || _hoverGate.Monitoring)
             return;
-        _pawTimer.Interval = TimeSpan.FromMinutes(2 + _random.NextDouble() * 2);
+        _pawTimer.Interval = TimeSpan.FromMinutes(4 + _random.NextDouble() * 3);
         _pawTimer.Start();
     }
 
     private void OnBehaviorTimer(object? sender, EventArgs e)
     {
-        if (_settings.Shape != ShapeMode.Auto || _autoAction || _hoverAnimation)
+        if (_settings.Shape != ShapeMode.Auto || _autoAction || _dragging || _hoverGate.Monitoring)
             return;
         _autoAction = true;
         switch (_random.Next(5))
@@ -264,7 +275,7 @@ internal sealed class AppController : IDisposable
     {
         if (_settings.Shape != ShapeMode.Auto)
             return;
-        if (_autoAction || _hoverAnimation)
+        if (_autoAction || _dragging || _hoverGate.Monitoring)
         {
             SchedulePawMoment();
             return;
@@ -273,15 +284,19 @@ internal sealed class AppController : IDisposable
         _animator.Play("paw-glass", 2, FinishAutoAction);
     }
 
-    private void PlayAutoOnce(string state) => _animator.Play(state, 1, FinishAutoAction);
+    private void PlayAutoOnce(string state) =>
+        _animator.Play(state, PetInteractionPolicy.AutomaticActionLoops, FinishAutoAction);
 
     private void ScheduleAutoRun(bool runSoon = false)
     {
-        if (!_settings.AutoRunEnabled || _autoRunTimer.IsEnabled || _autoAction || _hoverAnimation)
+        if (!_settings.AutoRunEnabled || _autoRunTimer.IsEnabled || _autoAction || _dragging ||
+            _hoverGate.Monitoring)
             return;
         _autoRunTimer.Interval = runSoon
-            ? TimeSpan.FromSeconds(3)
-            : TimeSpan.FromSeconds(_random.Next(12, 26));
+            ? TimeSpan.FromSeconds(PetInteractionPolicy.InitialAutoRunDelaySeconds)
+            : TimeSpan.FromSeconds(_random.Next(
+                PetInteractionPolicy.AutomaticDelayMinSeconds,
+                PetInteractionPolicy.AutomaticDelayMaxExclusiveSeconds));
         _autoRunTimer.Start();
         LocalLog.Info($"auto-run-scheduled delayMs={_autoRunTimer.Interval.TotalMilliseconds:0}");
     }
@@ -290,9 +305,9 @@ internal sealed class AppController : IDisposable
     {
         if (!_settings.AutoRunEnabled)
             return;
-        if (_autoAction || _hoverAnimation)
+        if (_autoAction || _dragging || _hoverGate.Monitoring)
         {
-            _autoRunTimer.Interval = TimeSpan.FromSeconds(_random.Next(8, 16));
+            _autoRunTimer.Interval = TimeSpan.FromSeconds(PetInteractionPolicy.AutomaticDelayMinSeconds);
             _autoRunTimer.Start();
             return;
         }
@@ -305,6 +320,46 @@ internal sealed class AppController : IDisposable
         StopAutomaticActivity();
         _autoAction = true;
         StartRun(true, false);
+    }
+
+    private void OnDragStarted()
+    {
+        StopAutomaticActivity();
+        _dragging = true;
+        _hoverGate.SuppressUntilExit();
+        _hoverBoundsTimer.Start();
+        _animator.Play("idle");
+        LocalLog.Info("drag-start");
+    }
+
+    private void OnDragMoved(double deltaX)
+    {
+        if (!_dragging)
+            return;
+        var direction = _dragDirection.Observe(deltaX);
+        if (direction == 0)
+            return;
+        var state = direction < 0 ? "running-left" : "running-right";
+        if (!_animator.CurrentState.Equals(state, StringComparison.OrdinalIgnoreCase))
+        {
+            LocalLog.Info($"drag-direction={(direction < 0 ? "left" : "right")}");
+            _animator.Play(state);
+        }
+    }
+
+    private void OnDragFinished()
+    {
+        if (!_dragging)
+            return;
+        _dragging = false;
+        SavePosition();
+        LocalLog.Info("drag-finished");
+        ApplyShape();
+        _hoverGate.SuppressUntilExit();
+        _behaviorTimer.Stop();
+        _pawTimer.Stop();
+        _autoRunTimer.Stop();
+        _hoverBoundsTimer.Start();
     }
 
     private void StartRun(bool extended, bool fromAutoRun)
@@ -362,8 +417,11 @@ internal sealed class AppController : IDisposable
         _pawTimer.Stop();
         _autoRunTimer.Stop();
         _movementTimer.Stop();
+        _hoverBoundsTimer.Stop();
         _movementFromAutoRun = false;
-        _hoverAnimation = false;
+        _dragDirection.Reset();
+        _dragging = false;
+        _hoverGate.Reset();
         _autoAction = false;
     }
 
@@ -383,7 +441,7 @@ internal sealed class AppController : IDisposable
         }
         SaveSettings();
         _tray.ShowBalloon(AppInfo.ProductName,
-            enabled ? "自动跑动已开启，乖喵会在 3 秒内先跑一次。" : "自动跑动已关闭。",
+            enabled ? "自动跑动已开启，乖喵会在 6 秒内先跑一次。" : "自动跑动已关闭。",
             Forms.ToolTipIcon.Info);
     }
 
