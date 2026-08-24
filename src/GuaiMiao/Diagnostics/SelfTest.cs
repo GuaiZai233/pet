@@ -71,6 +71,9 @@ internal static class SelfTest
                 errors.Add("悬停原地扑动画节奏未与 Codex 对齐。");
             if (PetInteractionPolicy.HoverPounceLoops != 3)
                 errors.Add("悬停原地扑没有连续播放三次。");
+            checks["thinkingState"] = PetInteractionPolicy.ThinkingState;
+            if (!PetInteractionPolicy.ThinkingState.Equals("running", StringComparison.Ordinal))
+                errors.Add("立即思考没有沿用 Codex 的 running 状态。");
 
             var hoverGate = new HoverInteractionGate();
             var firstHover = hoverGate.TryEnter();

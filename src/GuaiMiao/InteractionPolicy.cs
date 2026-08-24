@@ -2,6 +2,7 @@ namespace GuaiMiao;
 
 internal static class PetInteractionPolicy
 {
+    public const string ThinkingState = "running";
     public static readonly int HoverPounceLoops = 3;
     public static readonly int HoverExitSamples = 3;
     public static readonly double HoverExitMargin = 8.0;

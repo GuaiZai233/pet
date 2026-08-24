@@ -185,7 +185,7 @@ internal sealed class AppController : IDisposable
     {
         StopAutomaticActivity();
         _autoAction = true;
-        _animator.Play("review", 1, FinishAutoAction);
+        _animator.Play(PetInteractionPolicy.ThinkingState, 1, FinishAutoAction);
     }
 
     private void OnPointerEntered()

@@ -8,6 +8,14 @@ paw-generation/
 qa/*.gif
 qa/*.png
 
+# Local-only Guai Miao artwork (embedded into release builds, not source control)
+/src/GuaiMiao/Assets/*.png
+/src/GuaiMiao/Assets/*.webp
+/src/GuaiMiao/Assets/*.ico
+/src/GuaiMiao/Assets/*.jpg
+/src/GuaiMiao/Assets/*.jpeg
+/src/GuaiMiao/Assets/*.gif
+
 # IDE and OS files
 .vs/
 .vscode/
