@@ -10,7 +10,7 @@ internal static class AppInfo
     public const string LatestReleaseApiUrl = "https://api.github.com/repos/GuaiZai233/pet/releases/latest";
     public const string ReleaseDownloadPrefix = "https://github.com/GuaiZai233/pet/releases/download/";
     public const string ReleaseAssetName = "乖喵.exe";
-    public const string AboutText = "此形象由Codex生成，仅供个人使用！";
+    public const string AboutText = "此形象由Codex生成，参考图已经经过画师授权，仅供个人使用！";
     public const string RunValueName = "乖喵";
     public const string MutexName = @"Local\GuaiMiao-GuaiZai233-v1";
     public const string PipeName = "GuaiMiao-GuaiZai233-v1";

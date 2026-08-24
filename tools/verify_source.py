@@ -85,7 +85,7 @@ def main() -> None:
     checks["urls"] = urls
     if urls != allowed_urls:
         errors.append(f"unexpected URL set: {urls}")
-    if "此形象由Codex生成，仅供个人使用！" not in source_text:
+    if "此形象由Codex生成，参考图已经经过画师授权，仅供个人使用！" not in source_text:
         errors.append("exact About text is missing")
     required_behaviors = [
         'MouseEnter', 'MouseLeave', 'PointerEntered', 'PointerExited',
