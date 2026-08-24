@@ -46,7 +46,9 @@
       "run-start source=",
       "\"running-left\"",
       "\"running-right\"",
-      "AutomaticDelayMinSeconds = 45"
+      "AutomaticDelayMinSeconds = 45",
+      "ShouldUpgrade(incoming, installed, sameBinary)",
+      "FilesHaveSameSha256"
     ]
   },
   "errors": []

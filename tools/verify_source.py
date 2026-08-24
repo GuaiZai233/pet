@@ -92,6 +92,7 @@ def main() -> None:
         'SHA256.HashDataAsync', 'LaunchInstaller',
         'ScheduleAutoRun(runSoon: true)', 'settings-migrated schema=3', 'run-start source=',
         '"running-left"', '"running-right"', 'AutomaticDelayMinSeconds = 45',
+        'ShouldUpgrade(incoming, installed, sameBinary)', 'FilesHaveSameSha256',
     ]
     checks["desktopBehaviors"] = required_behaviors
     for behavior in required_behaviors:

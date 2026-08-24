@@ -29,7 +29,8 @@ internal static class SelfInstaller
 
             var incoming = ReadVersion(current);
             var installed = ReadVersion(AppPaths.InstalledExecutable);
-            if (incoming <= installed)
+            var sameBinary = incoming == installed && FilesHaveSameSha256(current, AppPaths.InstalledExecutable);
+            if (!ShouldUpgrade(incoming, installed, sameBinary))
             {
                 WakeOrStartInstalled();
                 return new BootstrapResult(true, true, null);
@@ -247,6 +248,18 @@ internal static class SelfInstaller
     {
         var raw = FileVersionInfo.GetVersionInfo(path).FileVersion;
         return Version.TryParse(raw, out var version) ? version : new Version(0, 0, 0, 0);
+    }
+
+    internal static bool ShouldUpgrade(Version incoming, Version installed, bool sameBinary) =>
+        incoming > installed || incoming == installed && !sameBinary;
+
+    private static bool FilesHaveSameSha256(string leftPath, string rightPath)
+    {
+        using var left = File.OpenRead(leftPath);
+        using var right = File.OpenRead(rightPath);
+        var leftHash = System.Security.Cryptography.SHA256.HashData(left);
+        var rightHash = System.Security.Cryptography.SHA256.HashData(right);
+        return leftHash.AsSpan().SequenceEqual(rightHash);
     }
 
     private static void TryStop(Process process)

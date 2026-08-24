@@ -170,6 +170,20 @@ internal static class SelfTest
             checks["autoRunDefault"] = defaultSettings.AutoRunEnabled;
             if (defaultSettings.SchemaVersion != 3 || !defaultSettings.AutoRunEnabled)
                 errors.Add("自动跑动的默认设置或设置版本错误。");
+
+            var version = new Version(1, 2, 0, 0);
+            var sameVersionHotfix = SelfInstaller.ShouldUpgrade(version, version, sameBinary: false);
+            var identicalBinarySkipped = !SelfInstaller.ShouldUpgrade(version, version, sameBinary: true);
+            var downgradeSkipped = !SelfInstaller.ShouldUpgrade(new Version(1, 1, 0, 0), version,
+                sameBinary: false);
+            checks["sameVersionHotfix"] = new
+            {
+                sameVersionHotfix,
+                identicalBinarySkipped,
+                downgradeSkipped
+            };
+            if (!sameVersionHotfix || !identicalBinarySkipped || !downgradeSkipped)
+                errors.Add("同版本热修复升级判定不正确。");
         }
         catch (Exception ex)
         {
