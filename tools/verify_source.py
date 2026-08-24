@@ -11,7 +11,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "src" / "GuaiMiao"
 ASSETS = SOURCE / "Assets"
-EXPECTED_CODEX_HASH = "01d4c02a36e5d484fd12cca3c43e56c6e79e0d41163470804ae275d9c8f859a7"
+EXPECTED_CODEX_HASH = "33eebf4e12a49ef0c50d3052f9ed718fa7e7b5a59995a0851c29de17ad7cfab4"
 
 
 def hash_file(path: Path) -> str:
